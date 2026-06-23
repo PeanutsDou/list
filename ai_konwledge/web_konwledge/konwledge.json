@@ -1,0 +1,72 @@
+[
+  {
+    "url": "https://douyin.com",
+    "title": "抖音-记录美好生活 - Google Chrome",
+    "browser_type": "Chrome",
+    "start_time": "2026-02-28T00:01:43.907564",
+    "end_time": "2026-02-28T00:01:54.598989",
+    "duration": 10.691424999999999,
+    "front_duration": 2.178906,
+    "background_duration": 8.512519
+  },
+  {
+    "url": "https://douyin.com/?recommend=1&from_nav=1",
+    "title": "抖音-记录美好生活 - Google Chrome",
+    "browser_type": "Chrome",
+    "start_time": "2026-02-28T00:01:54.598989",
+    "end_time": "2026-02-28T00:02:32.850402",
+    "duration": 38.251413,
+    "front_duration": 33.999098,
+    "background_duration": 4.252314999999999
+  },
+  {
+    "url": "https://douyin.com/?recommend=1",
+    "title": "抖音-记录美好生活 - Google Chrome",
+    "browser_type": "Chrome",
+    "start_time": "2026-02-28T00:02:32.850402",
+    "end_time": "2026-02-28T00:13:41.441658",
+    "duration": 668.5912559999999,
+    "front_duration": 292.574371,
+    "background_duration": 376.01688499999995
+  },
+  {
+    "url": "https://douyin.com/?recommend=1",
+    "title": "抖音-记录美好生活 - Google Chrome",
+    "browser_type": "Chrome",
+    "start_time": "2026-02-28T00:13:43.556818",
+    "end_time": "2026-02-28T00:19:14.922658",
+    "duration": 331.36584000000005,
+    "front_duration": 191.47156300000003,
+    "background_duration": 139.894277
+  },
+  {
+    "url": "https://github.com",
+    "title": "新标签页 - Google Chrome",
+    "browser_type": "Chrome",
+    "start_time": "2026-02-28T13:29:53.835923",
+    "end_time": "2026-02-28T13:32:21.314005",
+    "duration": 147.478082,
+    "front_duration": 9.503786999999999,
+    "background_duration": 137.974295
+  },
+  {
+    "url": "https://github.com",
+    "title": "GitHub - Google Chrome",
+    "browser_type": "Chrome",
+    "start_time": "2026-02-28T13:32:30.804018",
+    "end_time": "2026-02-28T13:32:40.677622",
+    "duration": 9.873604,
+    "front_duration": 0.0,
+    "background_duration": 9.873604
+  },
+  {
+    "url": "https://github.com",
+    "title": "GitHub - Google Chrome",
+    "browser_type": "Chrome",
+    "start_time": "2026-02-28T13:35:51.651307",
+    "end_time": "2026-02-28T13:46:54.928005",
+    "duration": 663.2766980000001,
+    "front_duration": 0.0,
+    "background_duration": 663.2766980000001
+  }
+]

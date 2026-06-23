@@ -1,0 +1,2136 @@
+{
+  "skills": [
+    {
+      "name": "split_task",
+      "description": "将复杂任务拆解为子任务列表。通常用于当用户提出的任务比较庞大或模糊时。",
+      "parameters": {
+        "task_content": {
+          "type": "string",
+          "description": "原始任务描述"
+        }
+      },
+      "required": ["task_content"]
+    },
+    {
+      "name": "add_task",
+      "description": "添加一个新任务到任务列表。当用户明确要求添加某个任务时使用。",
+      "parameters": {
+        "content": {
+          "type": "string",
+          "description": "任务的具体内容"
+        },
+        "parent_id": {
+          "type": "string",
+          "description": "父任务ID (可选)。如果提供，则添加为该父任务的子任务。",
+          "default": null
+        }
+      },
+      "required": ["content"]
+    },
+    {
+      "name": "add_task_by_date",
+      "description": "向指定日期添加任务。",
+      "parameters": {
+        "content": {
+          "type": "string",
+          "description": "任务的具体内容"
+        },
+        "scheduled_date": {
+          "type": "string",
+          "description": "任务日期 (YYYY-MM-DD)"
+        },
+        "parent_id": {
+          "type": "string",
+          "description": "父任务ID (可选)。如果提供，则添加为该父任务的子任务。",
+          "default": null
+        }
+      },
+      "required": ["content", "scheduled_date"]
+    },
+    {
+      "name": "add_tasks_batch",
+      "description": "批量添加多个任务。当有多个明确的任务需要一次性添加时使用。",
+      "parameters": {
+        "tasks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "任务内容列表"
+        }
+      },
+      "required": ["tasks"]
+    },
+    {
+      "name": "update_tasks_batch",
+      "description": "批量更新任务。当需要同时修改多个任务的状态或内容时使用，效率高于多次调用单次更新。",
+      "parameters": {
+        "updates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "description": "任务ID" },
+              "content": { "type": "string", "description": "新内容 (可选)" },
+              "status": { "type": "string", "description": "新状态 (可选)", "enum": ["pending", "completed"] }
+            },
+            "required": ["id"]
+          },
+          "description": "更新信息列表"
+        }
+      },
+      "required": ["updates"]
+    },
+    {
+      "name": "delete_tasks_batch",
+      "description": "批量删除任务。当需要同时删除多个任务时使用，效率高于多次调用单次删除。",
+      "parameters": {
+        "task_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "要删除的任务ID列表"
+        }
+      },
+      "required": ["task_ids"]
+    },
+    {
+      "name": "get_tasks",
+      "description": "获取当前所有任务列表(包含ID)。在需要查看、修改、删除任务前，必须先调用此工具获取最新的 ID。",
+      "parameters": {
+        "filter_status": {
+          "type": "string",
+          "description": "过滤状态。可选值: 'pending' (未完成), 'completed' (已完成), 'all' (所有)。默认为 'all'。",
+          "enum": ["pending", "completed", "all"],
+          "default": "all"
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "get_tasks_by_date",
+      "description": "获取指定日期的任务列表(包含ID)。",
+      "parameters": {
+        "scheduled_date": {
+          "type": "string",
+          "description": "任务日期 (YYYY-MM-DD)"
+        },
+        "filter_status": {
+          "type": "string",
+          "description": "过滤状态。可选值: 'pending' (未完成), 'completed' (已完成), 'all' (所有)。默认为 'all'。",
+          "enum": ["pending", "completed", "all"],
+          "default": "all"
+        }
+      },
+      "required": ["scheduled_date"]
+    },
+    {
+      "name": "update_task",
+      "description": "更新任务内容或状态。需要先获取任务ID。",
+      "parameters": {
+        "task_id": {
+          "type": "string",
+          "description": "任务ID"
+        },
+        "content": {
+          "type": "string",
+          "description": "新的任务内容 (可选)"
+        },
+        "status": {
+          "type": "string",
+          "description": "新的任务状态 (可选): 'pending', 'completed'",
+          "enum": ["pending", "completed"]
+        }
+      },
+      "required": ["task_id"]
+    },
+    {
+      "name": "update_task_by_date",
+      "description": "更新指定日期的任务内容或状态。需要先获取任务ID。",
+      "parameters": {
+        "task_id": {
+          "type": "string",
+          "description": "任务ID"
+        },
+        "scheduled_date": {
+          "type": "string",
+          "description": "任务日期 (YYYY-MM-DD)"
+        },
+        "content": {
+          "type": "string",
+          "description": "新的任务内容 (可选)"
+        },
+        "status": {
+          "type": "string",
+          "description": "新的任务状态 (可选): 'pending', 'completed'",
+          "enum": ["pending", "completed"]
+        }
+      },
+      "required": ["task_id", "scheduled_date"]
+    },
+    {
+      "name": "delete_task",
+      "description": "删除任务。需要先获取任务ID。",
+      "parameters": {
+        "task_id": {
+          "type": "string",
+          "description": "任务ID"
+        }
+      },
+      "required": ["task_id"]
+    },
+    {
+      "name": "delete_task_by_date",
+      "description": "删除指定日期的任务。需要先获取任务ID。",
+      "parameters": {
+        "task_id": {
+          "type": "string",
+          "description": "任务ID"
+        },
+        "scheduled_date": {
+          "type": "string",
+          "description": "任务日期 (YYYY-MM-DD)"
+        }
+      },
+      "required": ["task_id", "scheduled_date"]
+    },
+    {
+      "name": "move_task",
+      "description": "移动任务(修改父子关系)。",
+      "parameters": {
+        "task_id": {
+          "type": "string",
+          "description": "要移动的任务ID"
+        },
+        "new_parent_id": {
+          "type": "string",
+          "description": "新的父任务ID (可选)。如果不提供，则移动到顶层。",
+          "default": null
+        }
+      },
+      "required": ["task_id"]
+    },
+    {
+      "name": "move_tasks_batch",
+      "description": "批量移动任务(修改父子关系)。",
+      "parameters": {
+        "moves": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "task_id": { "type": "string", "description": "要移动的任务ID" },
+              "new_parent_id": { "type": "string", "description": "新的父任务ID (可选)" }
+            },
+            "required": ["task_id"]
+          },
+          "description": "移动信息列表"
+        }
+      },
+      "required": ["moves"]
+    },
+    {
+      "name": "move_task_by_position",
+      "description": "根据拖拽位置移动任务，支持前置、后置或设为子任务。",
+      "parameters": {
+        "task_id": {
+          "type": "string",
+          "description": "要移动的任务ID"
+        },
+        "target_id": {
+          "type": "string",
+          "description": "目标任务ID"
+        },
+        "position": {
+          "type": "string",
+          "description": "移动位置：before、after、child",
+          "enum": ["before", "after", "child"]
+        }
+      },
+      "required": ["task_id", "target_id", "position"]
+    },
+    {
+      "name": "move_tasks_by_position_batch",
+      "description": "批量按拖拽位置移动任务，支持前置、后置或设为子任务。",
+      "parameters": {
+        "moves": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "task_id": { "type": "string", "description": "要移动的任务ID" },
+              "target_id": { "type": "string", "description": "目标任务ID" },
+              "position": { "type": "string", "description": "移动位置：before、after、child", "enum": ["before", "after", "child"] }
+            },
+            "required": ["task_id", "target_id", "position"]
+          },
+          "description": "移动信息列表"
+        }
+      },
+      "required": ["moves"]
+    },
+    {
+      "name": "read_path_details",
+      "description": "读取指定路径的父目录内容，如果是文件夹还会读取其内部内容。",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "description": "目标文件或文件夹路径"
+        }
+      },
+      "required": ["path"]
+    },
+    {
+      "name": "add_common_file",
+      "description": "将指定文件或文件夹加入常用文件列表。",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "description": "目标文件或文件夹路径"
+        }
+      },
+      "required": ["path"]
+    },
+    {
+      "name": "get_common_files",
+      "description": "获取常用文件列表（包含自动与手动加入）。",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "record_open_file",
+      "description": "记录一次文件或文件夹打开行为，用于自动识别常用文件。",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "description": "目标文件或文件夹路径"
+        }
+      },
+      "required": ["path"]
+    },
+    {
+      "name": "remove_common_file",
+      "description": "将指定文件或文件夹从常用文件中移除。",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "description": "目标文件或文件夹路径"
+        }
+      },
+      "required": ["path"]
+    },
+    {
+      "name": "read_desktop_files",
+      "description": "读取桌面上的文件与文件夹列表，返回路径与基本信息，如果用户没有刻意强调文件路径，默认就是调用这个工具来查找",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "search_desktop_files_by_name",
+      "description": "在桌面按名称关键词查找文件或文件夹，仅搜索桌面顶层。",
+      "parameters": {
+        "name": {
+          "type": "string",
+          "description": "要匹配的名称关键词"
+        }
+      },
+      "required": ["name"]
+    },
+    {
+      "name": "search_desktop_files_recursive",
+      "description": "在桌面及其子文件夹中按名称关键词递归查找文件或文件夹。",
+      "parameters": {
+        "name": {
+          "type": "string",
+          "description": "要匹配的名称关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["name"]
+    },
+    {
+      "name": "get_statistics",
+      "description": "获取历史任务的统计数据，包括总完成数、未完成数、昨日完成数等。",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "clear_history",
+      "description": "清空所有历史任务数据。慎用！",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "create_folder",
+      "description": "在指定路径新建文件夹。支持绝对路径。若未指定父路径则默认为桌面。",
+      "parameters": {
+        "folder_name": {
+          "type": "string",
+          "description": "新文件夹的名称"
+        },
+        "parent_path": {
+          "type": "string",
+          "description": "父级目录路径 (可选)。支持绝对路径。如果未提供，默认在桌面创建。",
+          "default": null
+        }
+      },
+      "required": ["folder_name"]
+    },
+    {
+      "name": "create_folders_batch",
+      "description": "批量新建文件夹。支持绝对路径。",
+      "parameters": {
+        "folders_list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "description": "文件夹名称" },
+              "path": { "type": "string", "description": "父路径 (可选)。支持绝对路径。" }
+            },
+            "required": ["name"]
+          },
+          "description": "包含文件夹信息的列表"
+        }
+      },
+      "required": ["folders_list"]
+    },
+    {
+      "name": "move_file",
+      "description": "移动文件从一个路径到另一个路径。支持绝对路径。默认优先操作快捷方式。禁止操作 .exe/.bat 等启动器文件（除非明确指定完整文件名）。",
+      "parameters": {
+        "source_path": {
+          "type": "string",
+          "description": "源文件路径。支持绝对路径。"
+        },
+        "target_path": {
+          "type": "string",
+          "description": "目标路径 (可选)。支持绝对路径。可以是目录（移入其中）或完整文件路径（移动并重命名）。如果未提供，默认为桌面。",
+          "default": null
+        }
+      },
+      "required": ["source_path"]
+    },
+    {
+      "name": "copy_file",
+      "description": "复制文件到指定路径或目录。支持绝对路径。默认优先操作快捷方式。",
+      "parameters": {
+        "source_path": {
+          "type": "string",
+          "description": "源文件路径。支持绝对路径。"
+        },
+        "target_path": {
+          "type": "string",
+          "description": "目标路径 (可选)。支持绝对路径。可以是目录（复制进目录）或完整文件路径。如果未提供，默认为桌面。",
+          "default": null
+        },
+        "overwrite": {
+          "type": "boolean",
+          "description": "是否允许覆盖目标文件 (可选)",
+          "default": false
+        }
+      },
+      "required": ["source_path"]
+    },
+    {
+      "name": "open_file",
+      "description": "打开指定的文件或文件夹。支持绝对路径。如果是相对路径，默认在桌面查找。默认优先打开快捷方式。",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "description": "目标文件或文件夹路径。支持绝对路径。"
+        }
+      },
+      "required": ["path"]
+    },
+    {
+      "name": "get_pet_status",
+      "description": "获取桌宠当前动画状态与播放模式。",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "get_pet_features",
+      "description": "查询桌宠当前支持的功能与可用动画列表。",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "set_pet_animation",
+      "description": "切换桌宠动画，支持设置手动或随机播放模式。",
+      "parameters": {
+        "sequence_name": {
+          "type": "string",
+          "description": "要切换的动画序列名称"
+        },
+        "play_mode": {
+          "type": "string",
+          "description": "播放模式 (manual 或 random)，默认 manual",
+          "default": "manual"
+        },
+        "random_weights": {
+          "type": "object",
+          "description": "随机播放权重配置 (可选)，键为动画序列名，值为权重数值",
+          "default": null
+        },
+        "random_interval": {
+          "type": "object",
+          "description": "随机切换时间范围 (可选)，如 {\"min_seconds\":6,\"max_seconds\":14}",
+          "default": null
+        }
+      },
+      "required": ["sequence_name"]
+    },
+    {
+      "name": "move_files_batch",
+      "description": "批量移动文件。",
+      "parameters": {
+        "moves_list": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source": { "type": "string", "description": "源文件路径" },
+              "target": { "type": "string", "description": "目标路径 (可选)" }
+            },
+            "required": ["source"]
+          },
+          "description": "包含移动信息的列表"
+        }
+      },
+      "required": ["moves_list"]
+    },
+    {
+      "name": "add_common_files_batch",
+      "description": "批量添加常用文件。",
+      "parameters": {
+        "paths_list": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "文件路径列表"
+        }
+      },
+      "required": ["paths_list"]
+    },
+    {
+      "name": "record_open_files_batch",
+      "description": "批量记录文件打开。",
+      "parameters": {
+        "paths_list": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "文件路径列表"
+        }
+      },
+      "required": ["paths_list"]
+    },
+    {
+      "name": "read_path_details_batch",
+      "description": "批量读取路径详细信息（兼容别名）。",
+      "parameters": {
+        "paths_list": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "路径列表"
+        }
+      },
+      "required": ["paths_list"]
+    },
+    {
+      "name": "read_paths_details_batch",
+      "description": "批量读取路径详细信息。",
+      "parameters": {
+        "paths_list": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "路径列表"
+        }
+      },
+      "required": ["paths_list"]
+    },
+    {
+      "name": "remove_common_files_batch",
+      "description": "批量移除常用文件记录。",
+      "parameters": {
+        "paths_list": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "文件路径列表"
+        }
+      },
+      "required": ["paths_list"]
+    },
+    {
+      "name": "delete_file",
+      "description": "删除指定的文件或文件夹。如果是相对路径，默认在桌面查找。",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "description": "要删除的文件或文件夹路径"
+        }
+      },
+      "required": ["path"]
+    },
+    {
+      "name": "delete_files_batch",
+      "description": "批量删除文件或文件夹。",
+      "parameters": {
+        "paths_list": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "文件或文件夹路径列表"
+        }
+      },
+      "required": ["paths_list"]
+    },
+    {
+      "name": "create_markdown_file",
+      "description": "新建 Markdown 文档，默认创建到桌面。",
+      "parameters": {
+        "file_name": { "type": "string", "description": "Markdown 文件名" },
+        "content": { "type": "string", "description": "初始内容 (可选)" },
+        "parent_path": { "type": "string", "description": "父目录路径 (可选)" }
+      },
+      "required": ["file_name"]
+    },
+    {
+      "name": "read_markdown_file",
+      "description": "读取 Markdown 文档内容。支持绝对路径。若不确定路径，请先调用 read_desktop_files 或 search_desktop_files_by_name 获取。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "Markdown 文件路径或名称" }
+      },
+      "required": ["file_path"]
+    },
+    {
+      "name": "update_markdown_content",
+      "description": "更新 Markdown 文档内容（覆盖写入）。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "Markdown 文件路径或名称" },
+        "content": { "type": "string", "description": "新内容" }
+      },
+      "required": ["file_path", "content"]
+    },
+    {
+      "name": "append_markdown_content",
+      "description": "向 Markdown 文档追加内容。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "Markdown 文件路径或名称" },
+        "content": { "type": "string", "description": "追加内容" }
+      },
+      "required": ["file_path", "content"]
+    },
+    {
+      "name": "remove_markdown_content",
+      "description": "从 Markdown 文档中删除指定内容。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "Markdown 文件路径或名称" },
+        "content": { "type": "string", "description": "需要删除的内容" }
+      },
+      "required": ["file_path", "content"]
+    },
+    {
+      "name": "delete_markdown_file",
+      "description": "删除 Markdown 文档。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "Markdown 文件路径或名称" }
+      },
+      "required": ["file_path"]
+    },
+    {
+      "name": "create_docx_file",
+      "description": "新建 Word(docx) 文档，默认创建到桌面。",
+      "parameters": {
+        "file_name": { "type": "string", "description": "docx 文件名" },
+        "content": { "type": "string", "description": "初始内容或结构化内容 (可选)" },
+        "parent_path": { "type": "string", "description": "父目录路径 (可选)" },
+        "style": { "type": "object", "description": "字体样式 (可选)，支持 font_name/font_size/color" }
+      },
+      "required": ["file_name"]
+    },
+    {
+      "name": "read_docx_file",
+      "description": "读取 Word(docx) 文档内容。支持绝对路径。若不确定路径，请先调用 read_desktop_files 或 search_desktop_files_by_name 获取。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "docx 文件路径或名称。必须是确切的文件路径，支持绝对路径。" }
+      },
+      "required": ["file_path"]
+    },
+    {
+      "name": "update_docx_content",
+      "description": "更新 Word(docx) 文档内容，可覆盖、追加或删除。支持绝对路径。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "docx 文件路径或名称。必须是确切的文件路径。" },
+        "content": { "type": "string", "description": "内容或结构化内容 (可选)" },
+        "mode": { "type": "string", "description": "更新模式 replace/append/remove", "enum": ["replace", "append", "remove"] },
+        "style": { "type": "object", "description": "字体样式 (可选)，支持 font_name/font_size/color" }
+      },
+      "required": ["file_path"]
+    },
+    {
+      "name": "delete_docx_file",
+      "description": "删除 Word(docx) 文档。支持绝对路径。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "docx 文件路径或名称。必须是确切的文件路径。" }
+      },
+      "required": ["file_path"]
+    },
+    {
+      "name": "create_csv_file",
+      "description": "新建 CSV 文档，默认创建到桌面。支持绝对路径。",
+      "parameters": {
+        "file_name": { "type": "string", "description": "CSV 文件名" },
+        "columns": { "type": "array", "items": { "type": "string" }, "description": "列名列表 (可选)" },
+        "rows": { "type": "array", "items": { "type": "object" }, "description": "初始行数据 (可选)" },
+        "parent_path": { "type": "string", "description": "父目录路径 (可选)。支持绝对路径。" }
+      },
+      "required": ["file_name"]
+    },
+    {
+      "name": "read_csv_file",
+      "description": "读取 CSV 文档内容。支持绝对路径。若不确定路径，请先调用 read_desktop_files 或 search_desktop_files_by_name 获取。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "CSV 文件路径或名称。必须是确切的文件路径，支持绝对路径。" },
+        "max_rows": { "type": "number", "description": "预览最大行数 (可选)" }
+      },
+      "required": ["file_path"]
+    },
+    {
+      "name": "update_csv_content",
+      "description": "更新 CSV 文档内容，可覆盖、追加或按条件删除。支持绝对路径。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "CSV 文件路径或名称。必须是确切的文件路径。" },
+        "mode": { "type": "string", "description": "更新模式 replace/append/remove", "enum": ["replace", "append", "remove"] },
+        "data": { "type": "array", "items": { "type": "object" }, "description": "行数据 (可选)" },
+        "column": { "type": "string", "description": "删除条件列 (可选)" },
+        "value": { "type": "string", "description": "删除条件值 (可选)" }
+      },
+      "required": ["file_path"]
+    },
+    {
+      "name": "delete_csv_file",
+      "description": "删除 CSV 文档。支持绝对路径。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "CSV 文件路径或名称。必须是确切的文件路径。" }
+      },
+      "required": ["file_path"]
+    },
+    {
+      "name": "read_pdf_file",
+      "description": "读取 PDF 文档内容。支持绝对路径。若不确定路径，请先调用 read_desktop_files 或 search_desktop_files_by_name 获取。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "PDF 文件路径或名称。必须是确切的文件路径，支持绝对路径。" },
+        "max_pages": { "type": "number", "description": "最多读取页数 (可选)" }
+      },
+      "required": ["file_path"]
+    },
+    {
+      "name": "delete_pdf_file",
+      "description": "删除 PDF 文档。支持绝对路径。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "PDF 文件路径或名称。必须是确切的文件路径。" }
+      },
+      "required": ["file_path"]
+    },
+    {
+      "name": "create_py_file",
+      "description": "新建 Python 脚本文件，默认创建到桌面。支持绝对路径。",
+      "parameters": {
+        "file_name": { "type": "string", "description": "脚本文件名 (.py)" },
+        "content": { "type": "string", "description": "初始代码内容 (可选)" },
+        "parent_path": { "type": "string", "description": "父目录路径 (可选)。支持绝对路径。" }
+      },
+      "required": ["file_name"]
+    },
+    {
+      "name": "read_py_file",
+      "description": "读取 Python 脚本内容。支持绝对路径。若不确定路径，请先调用 read_desktop_files 或 search_desktop_files_by_name 获取。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "脚本文件路径或名称。必须是确切的文件路径，支持绝对路径。" }
+      },
+      "required": ["file_path"]
+    },
+    {
+      "name": "update_py_content",
+      "description": "更新 Python 脚本内容。支持绝对路径。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "脚本文件路径或名称。必须是确切的文件路径。" },
+        "content": { "type": "string", "description": "新的代码内容" },
+        "mode": { "type": "string", "description": "更新模式 replace/append", "enum": ["replace", "append"], "default": "replace" }
+      },
+      "required": ["file_path", "content"]
+    },
+    {
+      "name": "delete_py_file",
+      "description": "删除 Python 脚本文件。支持绝对路径。",
+      "parameters": {
+        "file_path": { "type": "string", "description": "脚本文件路径或名称。必须是确切的文件路径。" }
+      },
+      "required": ["file_path"]
+    },
+    {
+      "name": "query_token_usage",
+      "description": "查询指定日期、月份、年份或区间的 token 消耗与费用。",
+      "parameters": {
+        "period": {
+          "type": "string",
+          "description": "统计维度: day/month/year/range/total",
+          "enum": ["day", "month", "year", "range", "total"],
+          "default": "day"
+        },
+        "date": {
+          "type": "string",
+          "description": "目标日期或月份或年份 (YYYY-MM-DD / YYYY-MM / YYYY)"
+        },
+        "start_date": {
+          "type": "string",
+          "description": "区间开始日期 (YYYY-MM-DD)"
+        },
+        "end_date": {
+          "type": "string",
+          "description": "区间结束日期 (YYYY-MM-DD)"
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "get_all_browsers_info",
+      "description": "获取所有正在运行的浏览器窗口的网页标题和URL（包括前台和后台窗口）。支持 Chrome, Edge, Firefox。",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "open_url",
+      "description": "使用浏览器打开指定的 URL，优先使用 Google Chrome，如果不存在则使用系统默认浏览器。",
+      "parameters": {
+        "url": {
+          "type": "string",
+          "description": "要打开的网页地址"
+        }
+      },
+      "required": ["url"]
+    },
+    {
+      "name": "read_open_web_content",
+      "description": "在安全范围内读取正在打开或后台运行网页的主要文本内容。",
+      "parameters": {
+        "mode": {
+          "type": "string",
+          "description": "读取模式：active 当前前台窗口，all 所有窗口，url 指定地址",
+          "enum": ["active", "all", "url"],
+          "default": "active"
+        },
+        "url": {
+          "type": "string",
+          "description": "mode=url 时指定地址",
+          "default": ""
+        },
+        "keyword": {
+          "type": "string",
+          "description": "按标题或 URL 关键词过滤",
+          "default": ""
+        },
+        "max_pages": {
+          "type": "integer",
+          "description": "最多读取的页面数量",
+          "default": 3
+        },
+        "max_chars": {
+          "type": "integer",
+          "description": "每个页面返回的最大字符数",
+          "default": 4000
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "read_web_content_background",
+      "description": "在后台直接读取指定网页的主要文本内容，不打开浏览器窗口，如果用户没有提出要显性打开网页，就默认用这个skill来读取网页信息",
+      "parameters": {
+        "urls": {
+          "type": "array",
+          "description": "网页地址列表",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "max_pages": {
+          "type": "integer",
+          "description": "最多读取的页面数量",
+          "default": 3
+        },
+        "max_chars": {
+          "type": "integer",
+          "description": "每个页面返回的最大字符数",
+          "default": 4000
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "write_email",
+      "description": "撰写邮件内容并生成可发送的邮件结构。",
+      "parameters": {
+        "subject": { "type": "string", "description": "邮件主题" },
+        "body": { "type": "string", "description": "邮件正文" },
+        "to": { "type": "string", "description": "收件人邮箱地址，多个用逗号分隔" },
+        "cc": { "type": "string", "description": "抄送邮箱地址，多个用逗号分隔", "default": "" },
+        "bcc": { "type": "string", "description": "密送邮箱地址，多个用逗号分隔", "default": "" },
+        "sender_email": { "type": "string", "description": "发件人邮箱地址（可选）", "default": "" },
+        "sender_name": { "type": "string", "description": "发件人显示名称（可选）", "default": "" },
+        "reply_to": { "type": "string", "description": "回复地址（可选）", "default": "" },
+        "is_html": { "type": "boolean", "description": "是否为 HTML 正文", "default": false },
+        "charset": { "type": "string", "description": "邮件编码", "default": "utf-8" }
+      },
+      "required": ["subject", "body", "to"]
+    },
+    {
+      "name": "send_email",
+      "description": "发送邮件，支持 QQ SMTP。",
+      "parameters": {
+        "subject": { "type": "string", "description": "邮件主题" },
+        "body": { "type": "string", "description": "邮件正文" },
+        "to": { "type": "string", "description": "收件人邮箱地址，多个用逗号分隔" },
+        "cc": { "type": "string", "description": "抄送邮箱地址，多个用逗号分隔", "default": "" },
+        "bcc": { "type": "string", "description": "密送邮箱地址，多个用逗号分隔", "default": "" },
+        "sender_email": { "type": "string", "description": "发件人邮箱地址", "default": "" },
+        "sender_name": { "type": "string", "description": "发件人显示名称（可选）", "default": "" },
+        "reply_to": { "type": "string", "description": "回复地址（可选）", "default": "" },
+        "is_html": { "type": "boolean", "description": "是否为 HTML 正文", "default": false },
+        "charset": { "type": "string", "description": "邮件编码", "default": "utf-8" },
+        "smtp_server": { "type": "string", "description": "SMTP 服务器地址", "default": "smtp.qq.com" },
+        "smtp_port": { "type": "integer", "description": "SMTP 端口", "default": 465 },
+        "smtp_ssl": { "type": "boolean", "description": "是否启用 SSL", "default": true },
+        "smtp_user": { "type": "string", "description": "SMTP 登录用户名（可选）", "default": "" },
+        "smtp_auth_code": { "type": "string", "description": "SMTP 授权码（可选）", "default": "" },
+        "smtp_auth_file": { "type": "string", "description": "SMTP 授权码文件路径（可选）", "default": "" },
+        "timeout": { "type": "integer", "description": "超时时间（秒）", "default": 20 }
+      },
+      "required": ["subject", "body", "to"]
+    },
+    {
+      "name": "schedule_send_email",
+      "description": "定时撰写并发送邮件，支持单次或周期性发送，支持任务持久化。",
+      "parameters": {
+        "subject": { "type": "string", "description": "邮件主题" },
+        "body": { "type": "string", "description": "邮件正文" },
+        "to": { "type": "string", "description": "收件人邮箱地址，多个用逗号分隔" },
+        "send_at": { "type": "string", "description": "定时发送时间（YYYY-MM-DD HH:MM 或 ISO）", "default": "" },
+        "delay_seconds": { "type": "number", "description": "延迟发送秒数（与 send_at 二选一）", "default": 0 },
+        "recurrence": { 
+          "type": "object", 
+          "description": "周期性配置。简单字符串 'daily'/'weekly'/'monthly'/'yearly'，或复杂对象 {type: 'daily', time: '09:00'} 等。",
+          "default": null 
+        },
+        "cc": { "type": "string", "description": "抄送邮箱地址，多个用逗号分隔", "default": "" },
+        "bcc": { "type": "string", "description": "密送邮箱地址，多个用逗号分隔", "default": "" },
+        "sender_email": { "type": "string", "description": "发件人邮箱地址", "default": "" },
+        "sender_name": { "type": "string", "description": "发件人显示名称（可选）", "default": "" },
+        "reply_to": { "type": "string", "description": "回复地址（可选）", "default": "" },
+        "is_html": { "type": "boolean", "description": "是否为 HTML 正文", "default": false },
+        "charset": { "type": "string", "description": "邮件编码", "default": "utf-8" },
+        "smtp_server": { "type": "string", "description": "SMTP 服务器地址", "default": "smtp.qq.com" },
+        "smtp_port": { "type": "integer", "description": "SMTP 端口", "default": 465 },
+        "smtp_ssl": { "type": "boolean", "description": "是否启用 SSL", "default": true },
+        "smtp_user": { "type": "string", "description": "SMTP 登录用户名（可选）", "default": "" },
+        "smtp_auth_code": { "type": "string", "description": "SMTP 授权码（可选）", "default": "" },
+        "smtp_auth_file": { "type": "string", "description": "SMTP 授权码文件路径（可选）", "default": "" },
+        "timeout": { "type": "integer", "description": "超时时间（秒）", "default": 20 }
+      },
+      "required": ["subject", "body", "to"]
+    },
+    {
+      "name": "delete_email_task",
+      "description": "删除指定的邮件任务（定时或实时）。",
+      "parameters": {
+        "task_id": { "type": "string", "description": "任务ID" }
+      },
+      "required": ["task_id"]
+    },
+    {
+      "name": "add_realtime_email_task",
+      "description": "添加一个实时邮件任务，将在每日首次启动程序时，调用 AI 根据提示词撰写并发送邮件。",
+      "parameters": {
+        "prompt": { "type": "string", "description": "用于生成邮件内容的提示词，例如'写一份今天的新闻早报'" },
+        "to": { "type": "string", "description": "收件人邮箱" },
+        "subject_hint": { "type": "string", "description": "邮件主题提示/默认主题", "default": "实时邮件" }
+      },
+      "required": ["prompt"]
+    },
+    {
+      "name": "get_email_tasks",
+      "description": "获取当前的邮件任务列表（定时与实时）。",
+      "parameters": {
+        "query_type": { 
+          "type": "string", 
+          "description": "查询类型：'all' (所有), 'scheduled' (定时), 'realtime' (实时)", 
+          "enum": ["all", "scheduled", "realtime"],
+          "default": "all" 
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "add_transaction",
+      "description": "添加一笔收支记录。",
+      "parameters": {
+        "amount": { "type": "number", "description": "金额" },
+        "category": { "type": "string", "description": "分类 (如: 餐饮, 交通, 工资)" },
+        "description": { "type": "string", "description": "备注", "default": "" },
+        "type": { "type": "string", "description": "类型 (expense: 支出, income: 收入)", "enum": ["expense", "income"], "default": "expense" },
+        "date": { "type": "string", "description": "日期 (YYYY-MM-DD), 默认为今天", "default": "" }
+      },
+      "required": ["amount", "category"]
+    },
+    {
+      "name": "get_transactions",
+      "description": "查询收支记录。",
+      "parameters": {
+        "start_date": { "type": "string", "description": "开始日期 (YYYY-MM-DD)", "default": "" },
+        "end_date": { "type": "string", "description": "结束日期 (YYYY-MM-DD)", "default": "" },
+        "category": { "type": "string", "description": "分类筛选", "default": "" },
+        "type": { "type": "string", "description": "类型筛选 (expense/income)", "default": "" }
+      },
+      "required": []
+    },
+    {
+      "name": "get_summary",
+      "description": "获取收支统计。",
+      "parameters": {
+        "period": { "type": "string", "description": "统计周期: month (默认), year, total", "enum": ["month", "year", "total"], "default": "month" },
+        "date": { "type": "string", "description": "指定日期或月份 (YYYY-MM 或 YYYY), 默认为当前", "default": "" }
+      },
+      "required": []
+    },
+    {
+      "name": "query_web_knowledge",
+      "description": "检索网页浏览历史知识库，支持查询最近记录、关键词搜索和浏览统计。",
+      "parameters": {
+        "query_type": {
+          "type": "string",
+          "description": "查询类型：'recent' (最近记录), 'search' (关键词搜索), 'stats' (统计)",
+          "enum": ["recent", "search", "stats"],
+          "default": "recent"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        },
+        "keyword": {
+          "type": "string",
+          "description": "搜索关键词 (search 模式必填)"
+        },
+        "date": {
+          "type": "string",
+          "description": "日期过滤 (YYYY-MM-DD)"
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "search_web_history_by_keyword",
+      "description": "按关键词检索网页浏览历史，匹配标题或 URL。",
+      "parameters": {
+        "keyword": {
+          "type": "string",
+          "description": "关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["keyword"]
+    },
+    {
+      "name": "search_web_history_by_title",
+      "description": "按标题关键词检索网页浏览历史。",
+      "parameters": {
+        "title_keyword": {
+          "type": "string",
+          "description": "标题关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["title_keyword"]
+    },
+    {
+      "name": "search_web_history_by_name",
+      "description": "按名称关键词检索网页浏览历史（等同标题检索）。",
+      "parameters": {
+        "name_keyword": {
+          "type": "string",
+          "description": "名称关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["name_keyword"]
+    },
+    {
+      "name": "search_web_history_by_url",
+      "description": "按 URL 关键词检索网页浏览历史。",
+      "parameters": {
+        "url_keyword": {
+          "type": "string",
+          "description": "URL 关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["url_keyword"]
+    },
+    {
+      "name": "search_web_history_by_domain",
+      "description": "按域名关键词检索网页浏览历史。",
+      "parameters": {
+        "domain_keyword": {
+          "type": "string",
+          "description": "域名关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["domain_keyword"]
+    },
+    {
+      "name": "search_web_history_by_browser",
+      "description": "按浏览器类型检索网页浏览历史。",
+      "parameters": {
+        "browser_type": {
+          "type": "string",
+          "description": "浏览器类型，如 Chrome / Edge / Firefox"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["browser_type"]
+    },
+    {
+      "name": "search_web_history_by_date",
+      "description": "按日期检索网页浏览历史。",
+      "parameters": {
+        "date": {
+          "type": "string",
+          "description": "日期 (YYYY-MM-DD)"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["date"]
+    },
+    {
+      "name": "search_web_history_by_time_range",
+      "description": "按时间范围检索网页浏览历史。",
+      "parameters": {
+        "start_time": {
+          "type": "string",
+          "description": "起始时间 (YYYY-MM-DD 或 ISO)"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "结束时间 (YYYY-MM-DD 或 ISO)",
+          "default": ""
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["start_time"]
+    },
+    {
+      "name": "search_web_history_combined",
+      "description": "组合多个条件检索网页浏览历史。",
+      "parameters": {
+        "keyword": {
+          "type": "string",
+          "description": "关键词（标题或 URL）",
+          "default": ""
+        },
+        "title_keyword": {
+          "type": "string",
+          "description": "标题关键词",
+          "default": ""
+        },
+        "name_keyword": {
+          "type": "string",
+          "description": "名称关键词（同标题）",
+          "default": ""
+        },
+        "url_keyword": {
+          "type": "string",
+          "description": "URL 关键词",
+          "default": ""
+        },
+        "domain_keyword": {
+          "type": "string",
+          "description": "域名关键词",
+          "default": ""
+        },
+        "browser_type": {
+          "type": "string",
+          "description": "浏览器类型",
+          "default": ""
+        },
+        "date": {
+          "type": "string",
+          "description": "日期 (YYYY-MM-DD)",
+          "default": ""
+        },
+        "start_time": {
+          "type": "string",
+          "description": "起始时间 (YYYY-MM-DD 或 ISO)",
+          "default": ""
+        },
+        "end_time": {
+          "type": "string",
+          "description": "结束时间 (YYYY-MM-DD 或 ISO)",
+          "default": ""
+        },
+        "min_duration": {
+          "type": "number",
+          "description": "最小停留时长（秒）",
+          "default": 0
+        },
+        "max_duration": {
+          "type": "number",
+          "description": "最大停留时长（秒）",
+          "default": 0
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        },
+        "sort_order": {
+          "type": "string",
+          "description": "排序方式：desc/asc",
+          "enum": ["desc", "asc"],
+          "default": "desc"
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "clear_web_knowledge",
+      "description": "清空网页浏览历史记录知识库。此操作不可逆，请谨慎使用。",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "toggle_web_monitor",
+      "description": "开启或关闭后台网页监控功能。",
+      "parameters": {
+        "enable": {
+          "type": "boolean",
+          "description": "True 为开启监控，False 为关闭监控",
+          "default": true
+        }
+      },
+      "required": ["enable"]
+    },
+    {
+      "name": "read_web_info",
+      "description": "读取网页监控记录与收藏网址信息。",
+      "parameters": {
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        },
+        "date": {
+          "type": "string",
+          "description": "按日期过滤 (YYYY-MM-DD)",
+          "default": ""
+        },
+        "include_favorites": {
+          "type": "boolean",
+          "description": "是否返回收藏网址列表",
+          "default": true
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "get_note",
+      "description": "读取记事内容。",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "write_note",
+      "description": "覆盖写入记事内容。",
+      "parameters": {
+        "content": {
+          "type": "string",
+          "description": "要写入的内容"
+        }
+      },
+      "required": ["content"]
+    },
+    {
+      "name": "append_note",
+      "description": "追加记事内容。",
+      "parameters": {
+        "text": {
+          "type": "string",
+          "description": "要追加的内容"
+        }
+      },
+      "required": ["text"]
+    },
+    {
+      "name": "update_note",
+      "description": "更新记事内容（等同覆盖写入）。",
+      "parameters": {
+        "content": {
+          "type": "string",
+          "description": "新的内容"
+        }
+      },
+      "required": ["content"]
+    },
+    {
+      "name": "clear_note",
+      "description": "清空记事内容。",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "search_note",
+      "description": "在记事内容中检索关键词。",
+      "parameters": {
+        "keyword": {
+          "type": "string",
+          "description": "检索关键词"
+        },
+        "context_len": {
+          "type": "integer",
+          "description": "匹配片段长度",
+          "default": 30
+        }
+      },
+      "required": ["keyword"]
+    },
+    {
+      "name": "replace_note_text",
+      "description": "替换记事内容中的文本。",
+      "parameters": {
+        "old_text": {
+          "type": "string",
+          "description": "要替换的旧内容"
+        },
+        "new_text": {
+          "type": "string",
+          "description": "新的内容"
+        },
+        "replace_all": {
+          "type": "boolean",
+          "description": "是否全部替换",
+          "default": true
+        }
+      },
+      "required": ["old_text", "new_text"]
+    },
+    {
+      "name": "remove_note_text",
+      "description": "删除记事内容中的指定文本。",
+      "parameters": {
+        "target_text": {
+          "type": "string",
+          "description": "要删除的文本"
+        },
+        "remove_all": {
+          "type": "boolean",
+          "description": "是否全部删除",
+          "default": true
+        }
+      },
+      "required": ["target_text"]
+    },
+    {
+      "name": "set_note_style_preferences",
+      "description": "设置记事样式偏好。",
+      "parameters": {
+        "font_family": {
+          "type": "string",
+          "description": "字体名称"
+        },
+        "font_size": {
+          "type": "integer",
+          "description": "字号"
+        },
+        "color": {
+          "type": "string",
+          "description": "颜色十六进制"
+        },
+        "bold": {
+          "type": "boolean",
+          "description": "是否加粗"
+        },
+        "italic": {
+          "type": "boolean",
+          "description": "是否斜体"
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "add_favorite_url",
+      "description": "添加收藏网址。",
+      "parameters": {
+        "url": {
+          "type": "string",
+          "description": "网址"
+        },
+        "title": {
+          "type": "string",
+          "description": "显示标题",
+          "default": ""
+        }
+      },
+      "required": ["url"]
+    },
+    {
+      "name": "remove_favorite_url",
+      "description": "移除收藏网址。",
+      "parameters": {
+        "keyword": {
+          "type": "string",
+          "description": "网址或标题关键词"
+        }
+      },
+      "required": ["keyword"]
+    },
+    {
+      "name": "list_favorite_urls",
+      "description": "获取收藏网址列表。",
+      "parameters": {
+        "limit": {
+          "type": "integer",
+          "description": "返回数量限制",
+          "default": 0
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "search_favorite_urls",
+      "description": "检索收藏网址。",
+      "parameters": {
+        "keyword": {
+          "type": "string",
+          "description": "关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量限制",
+          "default": 10
+        }
+      },
+      "required": ["keyword"]
+    },
+    {
+      "name": "open_favorite_url",
+      "description": "打开单个收藏网址。",
+      "parameters": {
+        "keyword": {
+          "type": "string",
+          "description": "网址或标题关键词"
+        }
+      },
+      "required": ["keyword"]
+    },
+    {
+      "name": "open_favorite_urls_batch",
+      "description": "批量打开收藏网址。",
+      "parameters": {
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "关键词列表"
+        }
+      },
+      "required": ["keywords"]
+    },
+    {
+      "name": "get_all_apps_info",
+      "description": "获取所有正在运行的软件窗口信息（包括前台与后台）。",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "open_app",
+      "description": "打开本地软件或文件路径。",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "description": "软件或文件路径"
+        }
+      },
+      "required": ["path"]
+    },
+    {
+      "name": "query_soft_knowledge",
+      "description": "检索软件使用记录知识库，支持最近记录、关键词搜索和统计。",
+      "parameters": {
+        "query_type": {
+          "type": "string",
+          "description": "查询类型：'recent' (最近记录), 'search' (关键词搜索), 'stats' (统计)",
+          "enum": ["recent", "search", "stats"],
+          "default": "recent"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        },
+        "keyword": {
+          "type": "string",
+          "description": "搜索关键词 (search 模式必填)"
+        },
+        "date": {
+          "type": "string",
+          "description": "日期过滤 (YYYY-MM-DD)"
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "clear_soft_knowledge",
+      "description": "清空软件使用记录知识库。",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "toggle_soft_monitor",
+      "description": "开启或关闭软件监控功能。",
+      "parameters": {
+        "enable": {
+          "type": "boolean",
+          "description": "True 为开启监控，False 为关闭监控",
+          "default": true
+        }
+      },
+      "required": ["enable"]
+    },
+    {
+      "name": "read_soft_info",
+      "description": "读取软件监控记录与收藏软件信息。",
+      "parameters": {
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        },
+        "date": {
+          "type": "string",
+          "description": "按日期过滤 (YYYY-MM-DD)",
+          "default": ""
+        },
+        "include_favorites": {
+          "type": "boolean",
+          "description": "是否返回收藏软件列表",
+          "default": true
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "add_favorite_app",
+      "description": "添加收藏软件。",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "description": "软件或快捷方式路径"
+        },
+        "title": {
+          "type": "string",
+          "description": "显示标题",
+          "default": ""
+        }
+      },
+      "required": ["path"]
+    },
+    {
+      "name": "remove_favorite_app",
+      "description": "移除收藏软件。",
+      "parameters": {
+        "keyword": {
+          "type": "string",
+          "description": "路径或标题关键词"
+        }
+      },
+      "required": ["keyword"]
+    },
+    {
+      "name": "list_favorite_apps",
+      "description": "获取收藏软件列表。",
+      "parameters": {
+        "limit": {
+          "type": "integer",
+          "description": "返回数量限制",
+          "default": 0
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "search_favorite_apps",
+      "description": "检索收藏软件。",
+      "parameters": {
+        "keyword": {
+          "type": "string",
+          "description": "关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回数量限制",
+          "default": 10
+        }
+      },
+      "required": ["keyword"]
+    },
+    {
+      "name": "open_favorite_app",
+      "description": "打开单个收藏软件。",
+      "parameters": {
+        "keyword": {
+          "type": "string",
+          "description": "路径或标题关键词"
+        }
+      },
+      "required": ["keyword"]
+    },
+    {
+      "name": "open_favorite_apps_batch",
+      "description": "批量打开收藏软件。",
+      "parameters": {
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "关键词列表"
+        }
+      },
+      "required": ["keywords"]
+    },
+    {
+      "name": "search_soft_history_by_keyword",
+      "description": "按关键词检索软件使用记录，匹配标题、应用名、进程名或路径。",
+      "parameters": {
+        "keyword": {
+          "type": "string",
+          "description": "关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["keyword"]
+    },
+    {
+      "name": "search_soft_history_by_title",
+      "description": "按窗口标题关键词检索软件使用记录。",
+      "parameters": {
+        "title_keyword": {
+          "type": "string",
+          "description": "标题关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["title_keyword"]
+    },
+    {
+      "name": "search_soft_history_by_name",
+      "description": "按名称关键词检索软件使用记录（等同标题检索）。",
+      "parameters": {
+        "name_keyword": {
+          "type": "string",
+          "description": "名称关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["name_keyword"]
+    },
+    {
+      "name": "search_soft_history_by_app",
+      "description": "按应用名关键词检索软件使用记录。",
+      "parameters": {
+        "app_keyword": {
+          "type": "string",
+          "description": "应用名关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["app_keyword"]
+    },
+    {
+      "name": "search_soft_history_by_process",
+      "description": "按进程名关键词检索软件使用记录。",
+      "parameters": {
+        "process_keyword": {
+          "type": "string",
+          "description": "进程名关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["process_keyword"]
+    },
+    {
+      "name": "search_soft_history_by_exe_path",
+      "description": "按可执行路径关键词检索软件使用记录。",
+      "parameters": {
+        "path_keyword": {
+          "type": "string",
+          "description": "路径关键词"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["path_keyword"]
+    },
+    {
+      "name": "search_soft_history_by_date",
+      "description": "按日期检索软件使用记录。",
+      "parameters": {
+        "date": {
+          "type": "string",
+          "description": "日期 (YYYY-MM-DD)"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["date"]
+    },
+    {
+      "name": "search_soft_history_by_time_range",
+      "description": "按时间范围检索软件使用记录。",
+      "parameters": {
+        "start_time": {
+          "type": "string",
+          "description": "开始时间 (YYYY-MM-DD 或 YYYY-MM-DD HH:MM)"
+        },
+        "end_time": {
+          "type": "string",
+          "description": "结束时间 (YYYY-MM-DD 或 YYYY-MM-DD HH:MM)"
+        },
+        "limit": {
+          "type": "integer",
+          "description": "返回记录数量限制 (默认 0 表示不限制)",
+          "default": 0
+        }
+      },
+      "required": ["start_time"]
+    },
+    {
+      "name": "search_soft_history_combined",
+      "description": "组合条件检索软件使用记录。",
+      "parameters": {
+        "keyword": { "type": "string", "description": "关键词", "default": "" },
+        "title_keyword": { "type": "string", "description": "标题关键词", "default": "" },
+        "name_keyword": { "type": "string", "description": "名称关键词", "default": "" },
+        "app_keyword": { "type": "string", "description": "应用名关键词", "default": "" },
+        "process_keyword": { "type": "string", "description": "进程名关键词", "default": "" },
+        "exe_path_keyword": { "type": "string", "description": "路径关键词", "default": "" },
+        "date": { "type": "string", "description": "日期过滤 (YYYY-MM-DD)", "default": "" },
+        "start_time": { "type": "string", "description": "开始时间", "default": "" },
+        "end_time": { "type": "string", "description": "结束时间", "default": "" },
+        "min_duration": { "type": "number", "description": "最小时长 (秒)", "default": 0 },
+        "max_duration": { "type": "number", "description": "最大时长 (秒)", "default": 0 },
+        "limit": { "type": "integer", "description": "返回数量限制", "default": 0 },
+        "sort_order": { "type": "string", "description": "排序顺序 desc/asc", "enum": ["desc", "asc"], "default": "desc" }
+      },
+      "required": []
+    },
+    {
+      "name": "capture_screen",
+      "description": "截取当前屏幕并保存为图片。",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "description": "保存路径（可选，默认保存到内置目录）",
+          "default": ""
+        },
+        "region": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "description": "截图区域 [left, top, right, bottom]（可选）",
+          "default": []
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "capture_screen_base64",
+      "description": "截取屏幕并返回 base64 字符串。",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "description": "保存路径（可选，默认保存到内置目录）",
+          "default": ""
+        },
+        "region": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "description": "截图区域 [left, top, right, bottom]（可选）",
+          "default": []
+        },
+        "max_chars": {
+          "type": "integer",
+          "description": "返回的 base64 最大字符数（可选，0 为不限制）",
+          "default": 0
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "save_screen_capture",
+      "description": "按指定目录与命名规则保存截图。",
+      "parameters": {
+        "target_dir": {
+          "type": "string",
+          "description": "保存目录（可选，默认桌面）",
+          "default": ""
+        },
+        "file_name": {
+          "type": "string",
+          "description": "文件名（可选，不含扩展名会自动补 .png）",
+          "default": ""
+        },
+        "name_prefix": {
+          "type": "string",
+          "description": "自动命名前缀（可选）",
+          "default": "screen"
+        },
+        "region": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "description": "截图区域 [left, top, right, bottom]（可选）",
+          "default": []
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "list_screen_captures",
+      "description": "列出已保存的屏幕截图文件。",
+      "parameters": {
+        "limit": {
+          "type": "integer",
+          "description": "返回数量限制",
+          "default": 20
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "get_latest_screen_capture_path",
+      "description": "获取最新一张截图的路径。",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "read_screen_capture_info",
+      "description": "读取截图文件信息（大小、时间、分辨率）。",
+      "parameters": {
+        "path": {
+          "type": "string",
+          "description": "截图路径（可选，默认读取最新截图）",
+          "default": ""
+        }
+      },
+      "required": []
+    },
+    {
+      "name": "clear_screen_captures",
+      "description": "清空已保存的截图文件。",
+      "parameters": {},
+      "required": []
+    },
+    {
+      "name": "list_github_repos",
+      "description": "获取当前账号可访问的仓库列表。",
+      "parameters": {
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" },
+        "token_file": { "type": "string", "description": "Token 文件路径（可选）", "default": "" },
+        "visibility": { "type": "string", "description": "可见性 all/public/private", "default": "all" },
+        "affiliation": { "type": "string", "description": "归属过滤", "default": "owner,collaborator,organization_member" },
+        "per_page": { "type": "integer", "description": "每页数量", "default": 100 },
+        "page": { "type": "integer", "description": "页码", "default": 1 },
+        "base_url": { "type": "string", "description": "GitHub API Base URL", "default": "" }
+      },
+      "required": []
+    },
+    {
+      "name": "get_github_repo",
+      "description": "获取指定仓库信息。",
+      "parameters": {
+        "owner": { "type": "string", "description": "仓库所有者" },
+        "repo": { "type": "string", "description": "仓库名称" },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" },
+        "token_file": { "type": "string", "description": "Token 文件路径（可选）", "default": "" },
+        "base_url": { "type": "string", "description": "GitHub API Base URL", "default": "" }
+      },
+      "required": ["owner", "repo"]
+    },
+    {
+      "name": "create_github_repo",
+      "description": "创建新仓库。",
+      "parameters": {
+        "name": { "type": "string", "description": "仓库名称" },
+        "description": { "type": "string", "description": "仓库描述", "default": "" },
+        "private": { "type": "boolean", "description": "是否私有仓库", "default": false },
+        "auto_init": { "type": "boolean", "description": "是否自动初始化", "default": true },
+        "default_branch": { "type": "string", "description": "默认分支名", "default": "" },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" },
+        "token_file": { "type": "string", "description": "Token 文件路径（可选）", "default": "" },
+        "base_url": { "type": "string", "description": "GitHub API Base URL", "default": "" }
+      },
+      "required": ["name"]
+    },
+    {
+      "name": "delete_github_repo",
+      "description": "删除仓库。",
+      "parameters": {
+        "owner": { "type": "string", "description": "仓库所有者" },
+        "repo": { "type": "string", "description": "仓库名称" },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" },
+        "token_file": { "type": "string", "description": "Token 文件路径（可选）", "default": "" },
+        "base_url": { "type": "string", "description": "GitHub API Base URL", "default": "" }
+      },
+      "required": ["owner", "repo"]
+    },
+    {
+      "name": "update_github_repo",
+      "description": "更新仓库信息。",
+      "parameters": {
+        "owner": { "type": "string", "description": "仓库所有者" },
+        "repo": { "type": "string", "description": "仓库名称" },
+        "name": { "type": "string", "description": "新仓库名称", "default": null },
+        "description": { "type": "string", "description": "仓库描述", "default": null },
+        "private": { "type": "boolean", "description": "是否私有仓库", "default": null },
+        "default_branch": { "type": "string", "description": "默认分支名", "default": null },
+        "homepage": { "type": "string", "description": "主页地址", "default": null },
+        "has_issues": { "type": "boolean", "description": "是否启用 Issues", "default": null },
+        "has_projects": { "type": "boolean", "description": "是否启用 Projects", "default": null },
+        "has_wiki": { "type": "boolean", "description": "是否启用 Wiki", "default": null },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" },
+        "token_file": { "type": "string", "description": "Token 文件路径（可选）", "default": "" },
+        "base_url": { "type": "string", "description": "GitHub API Base URL", "default": "" }
+      },
+      "required": ["owner", "repo"]
+    },
+    {
+      "name": "list_github_branches",
+      "description": "获取仓库分支列表。",
+      "parameters": {
+        "owner": { "type": "string", "description": "仓库所有者" },
+        "repo": { "type": "string", "description": "仓库名称" },
+        "per_page": { "type": "integer", "description": "每页数量", "default": 100 },
+        "page": { "type": "integer", "description": "页码", "default": 1 },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" },
+        "token_file": { "type": "string", "description": "Token 文件路径（可选）", "default": "" },
+        "base_url": { "type": "string", "description": "GitHub API Base URL", "default": "" }
+      },
+      "required": ["owner", "repo"]
+    },
+    {
+      "name": "create_github_branch",
+      "description": "基于已有分支创建新分支。",
+      "parameters": {
+        "owner": { "type": "string", "description": "仓库所有者" },
+        "repo": { "type": "string", "description": "仓库名称" },
+        "new_branch": { "type": "string", "description": "新分支名称" },
+        "base_branch": { "type": "string", "description": "基准分支名称", "default": "main" },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" },
+        "token_file": { "type": "string", "description": "Token 文件路径（可选）", "default": "" },
+        "base_url": { "type": "string", "description": "GitHub API Base URL", "default": "" }
+      },
+      "required": ["owner", "repo", "new_branch"]
+    },
+    {
+      "name": "delete_github_branch",
+      "description": "删除分支。",
+      "parameters": {
+        "owner": { "type": "string", "description": "仓库所有者" },
+        "repo": { "type": "string", "description": "仓库名称" },
+        "branch": { "type": "string", "description": "分支名称" },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" },
+        "token_file": { "type": "string", "description": "Token 文件路径（可选）", "default": "" },
+        "base_url": { "type": "string", "description": "GitHub API Base URL", "default": "" }
+      },
+      "required": ["owner", "repo", "branch"]
+    },
+    {
+      "name": "list_github_contents",
+      "description": "获取仓库指定路径内容。",
+      "parameters": {
+        "owner": { "type": "string", "description": "仓库所有者" },
+        "repo": { "type": "string", "description": "仓库名称" },
+        "path": { "type": "string", "description": "仓库内路径", "default": "" },
+        "ref": { "type": "string", "description": "分支或提交", "default": "" },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" },
+        "token_file": { "type": "string", "description": "Token 文件路径（可选）", "default": "" },
+        "base_url": { "type": "string", "description": "GitHub API Base URL", "default": "" }
+      },
+      "required": ["owner", "repo"]
+    },
+    {
+      "name": "upload_github_file",
+      "description": "上传或更新仓库文件。",
+      "parameters": {
+        "owner": { "type": "string", "description": "仓库所有者" },
+        "repo": { "type": "string", "description": "仓库名称" },
+        "local_path": { "type": "string", "description": "本地文件绝对路径" },
+        "target_path": { "type": "string", "description": "仓库内目标路径" },
+        "branch": { "type": "string", "description": "分支名", "default": "main" },
+        "commit_message": { "type": "string", "description": "提交说明", "default": "update file" },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" },
+        "token_file": { "type": "string", "description": "Token 文件路径（可选）", "default": "" },
+        "base_url": { "type": "string", "description": "GitHub API Base URL", "default": "" }
+      },
+      "required": ["owner", "repo", "local_path", "target_path"]
+    },
+    {
+      "name": "delete_github_file",
+      "description": "删除仓库文件。",
+      "parameters": {
+        "owner": { "type": "string", "description": "仓库所有者" },
+        "repo": { "type": "string", "description": "仓库名称" },
+        "target_path": { "type": "string", "description": "仓库内目标路径" },
+        "branch": { "type": "string", "description": "分支名", "default": "main" },
+        "commit_message": { "type": "string", "description": "提交说明", "default": "delete file" },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" },
+        "token_file": { "type": "string", "description": "Token 文件路径（可选）", "default": "" },
+        "base_url": { "type": "string", "description": "GitHub API Base URL", "default": "" }
+      },
+      "required": ["owner", "repo", "target_path"]
+    },
+    {
+      "name": "create_repo_from_local_path",
+      "description": "从本地路径创建并推送到 GitHub。",
+      "parameters": {
+        "local_path": { "type": "string", "description": "本地项目路径" },
+        "repo_name": { "type": "string", "description": "仓库名称" },
+        "owner": { "type": "string", "description": "仓库所属账号或组织（可选）", "default": "" },
+        "repo_url": { "type": "string", "description": "远程仓库地址（可选）", "default": "" },
+        "description": { "type": "string", "description": "仓库描述", "default": "" },
+        "private": { "type": "boolean", "description": "是否私有仓库", "default": false },
+        "branch": { "type": "string", "description": "默认分支名", "default": "main" },
+        "commit_message": { "type": "string", "description": "首次提交说明", "default": "init" },
+        "use_existing_repo": { "type": "boolean", "description": "仓库已存在时是否直接使用", "default": true },
+        "remote_name": { "type": "string", "description": "远程名称", "default": "origin" },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" },
+        "token_file": { "type": "string", "description": "Token 文件路径（可选）", "default": "" },
+        "base_url": { "type": "string", "description": "GitHub API Base URL", "default": "" }
+      },
+      "required": ["local_path", "repo_name"]
+    },
+    {
+      "name": "git_clone_repo",
+      "description": "克隆远程仓库到本地。",
+      "parameters": {
+        "repo_url": { "type": "string", "description": "仓库地址" },
+        "dest_path": { "type": "string", "description": "本地目标路径", "default": "" },
+        "branch": { "type": "string", "description": "分支名", "default": "" },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" }
+      },
+      "required": ["repo_url"]
+    },
+    {
+      "name": "git_pull_repo",
+      "description": "拉取远程分支更新。",
+      "parameters": {
+        "local_path": { "type": "string", "description": "本地仓库路径" },
+        "remote": { "type": "string", "description": "远程名称", "default": "origin" },
+        "branch": { "type": "string", "description": "分支名", "default": "" },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" }
+      },
+      "required": ["local_path"]
+    },
+    {
+      "name": "git_checkout_branch",
+      "description": "切换或创建本地分支。",
+      "parameters": {
+        "local_path": { "type": "string", "description": "本地仓库路径" },
+        "branch": { "type": "string", "description": "分支名" },
+        "create": { "type": "boolean", "description": "是否新建分支", "default": false },
+        "start_point": { "type": "string", "description": "创建分支的起点", "default": "" }
+      },
+      "required": ["local_path", "branch"]
+    },
+    {
+      "name": "git_merge_branch",
+      "description": "合并分支到当前分支。",
+      "parameters": {
+        "local_path": { "type": "string", "description": "本地仓库路径" },
+        "source_branch": { "type": "string", "description": "要合并的分支" }
+      },
+      "required": ["local_path", "source_branch"]
+    },
+    {
+      "name": "git_push_repo",
+      "description": "推送本地分支到远程。",
+      "parameters": {
+        "local_path": { "type": "string", "description": "本地仓库路径" },
+        "remote": { "type": "string", "description": "远程名称", "default": "origin" },
+        "branch": { "type": "string", "description": "分支名", "default": "main" },
+        "token": { "type": "string", "description": "GitHub Token（可选）", "default": "" }
+      },
+      "required": ["local_path"]
+    }
+  ],
+  "system_instruction": "你是一个智能任务管理助手。你的核心职责是帮助用户管理任务列表。\n\n**重要原则：**\n1. **先思考，后行动**：在回复用户之前，先分析用户的意图。如果是查询、修改、删除操作，**必须**先思考是否需要调用技能。\n2. **ID 优先**：涉及具体任务的操作（修改、删除、移动），**必须**先调用 `get_tasks` 获取最新的任务列表和对应的 ID，**绝对不要**猜测 ID。\n3. **批量优先**：当需要创建或修改多个任务时，优先使用批量技能（如 `add_tasks_batch`、`update_tasks_batch`）。\n4. **依赖先行**：如果后续步骤依赖结果（如 ID），先调用获取类技能，再继续后续步骤。\n5. **执行到底**：一旦开始执行任务，不要在中途停下或询问是否继续，直到完成全部步骤。\n6. **步骤对齐**：先给出步骤，再按步骤顺序输出工具调用，确保一步一工具。\n7. **格式规范**：调用技能时，使用严格的 JSON 格式放在回复的最后。\n8. **参数准确**：`get_tasks` 的 `filter_status` 参数如果是 'all' 则返回所有任务。\n9. **结果复述**：当技能已返回结果时，最终回答必须基于结果总结并直接回应用户问题，不要只说“已完成”。\n10. **模糊意图处理**：当用户表达含糊但明显指向某类操作时，优先匹配最接近的技能并执行。\n11. **常见意图映射**：\n- 任务列表/日程/安排/计划/进度/待办/完成情况 -> get_tasks 或 get_tasks_by_date\n- 添加/创建/新增任务 -> add_task 或 add_tasks_batch\n- 修改/更新任务 -> update_task 或 update_tasks_batch\n- 删除/移除任务 -> delete_task 或 delete_tasks_batch\n- 桌宠状态/功能/动画 -> get_pet_status / get_pet_features\n- 让桌宠执行动作 -> set_pet_animation\n- 桌面文件/搜索文件 -> read_desktop_files / search_desktop_files_by_name"
+}

@@ -1,0 +1,24 @@
+{
+  "manual": [
+    "D:\\AR\\DS&Yuanbao\\Yuanbao\\yuanbao.exe",
+    "D:\\AR\\Trae\\Trae.exe",
+    "D:\\微信\\Weixin\\Weixin.exe",
+    "D:\\窦中君\\实习\\产出",
+    "D:\\窦中君\\实习\\产出\\git-GameAndTools\\list\\temp_chat_test.py",
+    "D:\\窦中君\\实习\\产出\\git-GameAndTools\\一键生成实习周报\\dist\\实习周报生成\\实习周报生成.exe",
+    "D:\\翻墙\\SakuraCat\\SakuraCat.exe"
+  ],
+  "opens": {
+    "2026-02-14": [],
+    "2026-02-15": [
+      "D:\\窦中君\\实习\\产出",
+      "D:\\窦中君\\实习\\产出\\git-GameAndTools\\一键生成实习周报\\dist\\实习周报生成\\实习周报生成.exe"
+    ],
+    "2026-02-17": [
+      "C:\\Users\\DELL\\Desktop\\实习回执.doc"
+    ],
+    "2026-02-22": [
+      "D:\\窦中君\\实习\\产出\\git-GameAndTools\\一键生成实习周报\\dist\\实习周报生成\\实习周报生成.exe"
+    ]
+  }
+}

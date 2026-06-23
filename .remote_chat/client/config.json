@@ -1,0 +1,21 @@
+{
+  "server": {
+    "host": "111.229.84.47",
+    "port": 8000,
+    "auth_token": "your_secure_auth_token_here"
+  },
+  "client": {
+    "name": "local_client",
+    "reconnect_interval": 5,
+    "timeout": 30
+  },
+  "reminder": {
+    "scan_interval_seconds": 60,
+    "quiet_hours": {
+      "enabled": false,
+      "start": "01:35",
+      "end": "01:40"
+    },
+    "max_logs_per_task": 50
+  }
+}

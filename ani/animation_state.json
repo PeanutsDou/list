@@ -1,0 +1,1 @@
+{"animation_window":{"x":1407,"y":-96,"width":177,"height":236,"scale":0.1,"layer_mode":"bottom"},"current_sequence":"sleep_series","play_mode":"manual","pet_motion":{"mode":"move_to","target":{"x":500.0,"y":200.0},"speed":240.0,"fly":true},"pet_position":{"x":500.0,"y":200.0},"random_interval":{"min_seconds":6,"max_seconds":14}}

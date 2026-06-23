@@ -1,0 +1,59 @@
+{
+  "default": "sleep_series",
+  "animations": {
+    "walk": {
+      "frames_dir": "ani/走路动画",
+      "pattern": "{index:02d}.png",
+      "start": 1,
+      "end": 4,
+      "loop": true,
+      "interval_ms": 120
+    },
+    "takeoff": {
+      "frames_dir": "ani/飞行动画/起飞",
+      "pattern": "{index:02d}.png",
+      "start": 1,
+      "end": 16,
+      "loop": false,
+      "interval_ms": 120
+    },
+    "hover": {
+      "frames_dir": "ani/飞行动画/滞空",
+      "pattern": "{index:02d}.png",
+      "start": 1,
+      "end": 3,
+      "loop": true,
+      "interval_ms": 200
+    },
+    "sleep": {
+      "frames_dir": "ani/睡觉动画",
+      "pattern": "{index:02d}.png",
+      "start": 1,
+      "end": 20,
+      "loop": false,
+      "interval_ms": 120
+    },
+    "sleep_idle": {
+      "frames_dir": "ani/睡觉待机动画",
+      "pattern": "{index:02d}.png",
+      "start": 1,
+      "end": 9,
+      "loop": true,
+      "interval_ms": 120
+    }
+  },
+  "sequences": {
+    "takeoff_hover": {
+      "items": [
+        { "name": "takeoff" },
+        { "name": "hover" }
+      ]
+    },
+    "sleep_series": {
+      "items": [
+        { "name": "sleep", "loop": false },
+        { "name": "sleep_idle", "loop": true }
+      ]
+    }
+  }
+}
